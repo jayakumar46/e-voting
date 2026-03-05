@@ -152,20 +152,17 @@ app.post("/admin/add-candidate", async (req, res) => {
 app.put("/admin/update-candidate/:id", async (req, res) => {
   const { id } = req.params;
   console.log(id);
-
   const { name, party_id, constituency_id } = req.body;
   console.log(name, party_id, constituency_id);
-
   if (!name || !party_id || !constituency_id) {
     return res.status(400).json({ message: "All fields required" });
   }
-
   try {
     const result = await pool.query(
       `UPDATE candidates
        SET name = $1,
-           party_id = $2,
-           constituency_id = $3
+      party_id = $2,
+      constituency_id = $3
        WHERE id = $4
        RETURNING *`,
       [name, party_id, constituency_id, id],

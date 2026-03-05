@@ -7,7 +7,7 @@
     "dev": "node --watch server.js"
   },
   "keywords": [],
-  "author": "Jayakumar",
+  "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
