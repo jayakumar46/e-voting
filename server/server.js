@@ -11,17 +11,25 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+console.log("Path", process.cwd());
+
 //Check the Value
 if (!process.env.DATABASE_URL) {
   throw new Error("URL is NOT read");
 }
+console.log("Database URL checking:", process.env.DATABASE_URL);
 
 //DB Connection
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // important for Neon
-  },
+});
+
+pool.query('SELECT 1', (err, res) => {
+  if (err) {
+    console.error("Connection failed:", err.message);
+  } else {
+    console.log("Database Connected Successfully!");
+  }
 });
 
 //get All citizens
@@ -277,11 +285,13 @@ app.use((err, req, res, next) => {
 });
 
 //Server Listen
-app.listen(5000, () => {
-  pool
-    .connect()
-    .then(() => console.log("DB Connected"))
-    .catch((err) => console.log("DB not Connected: ", err));
-
-  console.log("Server running on 5000");
+app.listen(5000, async () => {
+  try {
+    // Direct-ah query panni connection-ah verify pannunga
+    const res = await pool.query("SELECT NOW()");
+    console.log("DB Connected at:", res.rows[0].now);
+    console.log("Server running on port 5000");
+  } catch (err) {
+    console.error("DB Connection Error:", err);
+  }
 });
